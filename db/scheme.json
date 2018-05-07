@@ -1,0 +1,111 @@
+{
+  "name": "\u041e\u0431\u0443\u0447\u0430\u044e\u0449\u0438\u0435\u0441\u044f \u0441\u0438\u0441\u0442\u0435\u043c\u044b",
+  "slots": [
+    {
+      "name": "type",
+      "type": "str",
+      "value": "Scheme"
+    }
+  ],
+  "children": [
+    {
+      "name": "\u0414\u0432\u0443\u043a\u043b\u0430\u0441\u0441\u043e\u0432\u0430\u044f \u043a\u043b\u0430\u0441\u0441\u0438\u0444\u0438\u043a\u0430\u0446\u0438\u044f",
+      "slots": [
+        {
+          "name": "type",
+          "type": "str",
+          "value": "AlgType"
+        },
+        {
+          "name": "symbol",
+          "type": "str",
+          "value": "T1"
+        }
+      ],
+      "children": [
+        {
+          "name": "\u041b\u043e\u0433\u0438\u0441\u0442\u0438\u0447\u0435\u0441\u043a\u0430\u044f \u0440\u0435\u0433\u0440\u0435\u0441\u0441\u0438\u044f",
+          "slots": [
+            {
+              "name": "type",
+              "type": "str",
+              "value": "Algorithm"
+            },
+            {
+              "name": "symbol",
+              "type": "str",
+              "value": "A1"
+            },
+            {
+              "name": "\u0422\u043e\u0447\u043d\u043e\u0441\u0442\u044c",
+              "type": "int",
+              "value": 0
+            },
+            {
+              "name": "\u0412\u0440\u0435\u043c\u044f \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u044f",
+              "type": "int",
+              "value": 2
+            },
+            {
+              "name": "\u041b\u0438\u043d\u0435\u0439\u043d\u043e\u0441\u0442\u044c",
+              "type": "int",
+              "value": 1
+            },
+            {
+              "name": "\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b",
+              "type": "int",
+              "value": 5
+            },
+            {
+              "name": "\u041f\u0440\u0438\u043c\u0435\u0447\u0430\u043d\u0438\u0435",
+              "type": "NoneType",
+              "value": null
+            }
+          ],
+          "children": []
+        },
+        {
+          "name": "\u041b\u0435\u0441 \u0440\u0435\u0448\u0435\u043d\u0438\u0439",
+          "slots": [
+            {
+              "name": "type",
+              "type": "str",
+              "value": "Algorithm"
+            },
+            {
+              "name": "symbol",
+              "type": "str",
+              "value": "A1"
+            },
+            {
+              "name": "\u0422\u043e\u0447\u043d\u043e\u0441\u0442\u044c",
+              "type": "int",
+              "value": 2
+            },
+            {
+              "name": "\u0412\u0440\u0435\u043c\u044f \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u044f",
+              "type": "int",
+              "value": 1
+            },
+            {
+              "name": "\u041b\u0438\u043d\u0435\u0439\u043d\u043e\u0441\u0442\u044c",
+              "type": "int",
+              "value": 0
+            },
+            {
+              "name": "\u041f\u0430\u0440\u0430\u043c\u0435\u0442\u0440\u044b",
+              "type": "int",
+              "value": 6
+            },
+            {
+              "name": "\u041f\u0440\u0438\u043c\u0435\u0447\u0430\u043d\u0438",
+              "type": "NoneType",
+              "value": null
+            }
+          ],
+          "children": []
+        }
+      ]
+    }
+  ]
+}

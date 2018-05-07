@@ -1,0 +1,109 @@
+{
+  "name": "Обучающиеся системы",
+  "slots": [
+    {
+      "name": "type",
+      "type": "Text",
+      "value": "Scheme"
+    }
+  ],
+  "children": [
+    {
+      "name": "Двуклассовая классификация",
+      "slots": [
+        {
+          "name": "type",
+          "type": "Text",
+          "value": "AlgType"
+        },
+        {
+          "name": "symbol",
+          "type": "Text",
+          "value": "T1"
+        }
+      ],
+      "children": [
+        {
+          "name": "Логистическая регрессия",
+          "slots": [
+            {
+              "name": "type",
+              "type": "Text",
+              "value": "Algorithm"
+            },
+            {
+              "name": "symbol",
+              "type": "Text",
+              "value": "A1"
+            },
+            {
+              "name": "Точность",
+              "type": "Integer",
+              "value": 0
+            },
+            {
+              "name": "Время обучения",
+              "type": "Integer",
+              "value": 2
+            },
+            {
+              "name": "Линейность",
+              "type": "Bool",
+              "value": 1
+            },
+            {
+              "name": "Параметры",
+              "type": "Integer",
+              "value": 5
+            },
+            {
+              "name": "Примечание",
+              "type": "Text",
+              "value": null
+            }
+          ]
+        },
+        {
+          "name": "Лес решений",
+          "slots": [
+            {
+              "name": "type",
+              "type": "Text",
+              "value": "Algorithm"
+            },
+            {
+              "name": "symbol",
+              "type": "Text",
+              "value": "A1"
+            },
+            {
+              "name": "Точность",
+              "type": "Integer",
+              "value": 2
+            },
+            {
+              "name": "Время обучения",
+              "type": "Integer",
+              "value": 1
+            },
+            {
+              "name": "Линейность",
+              "type": "Bool",
+              "value": 0
+            },
+            {
+              "name": "Параметры",
+              "type": "Integer",
+              "value": 6
+            },
+            {
+              "name": "Примечание",
+              "type": "Text",
+              "value": null
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
