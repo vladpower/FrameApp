@@ -6,7 +6,7 @@ class Slot:
     Слот
     """
     # Имена системных слотов
-    SYSTEMS_NAMES = ('type')
+    SYSTEMS_NAMES = ('procedure')
 
     # -*- Указатели наследования -*-
     # Значение слота наследуется
@@ -45,7 +45,7 @@ class Slot:
     @property
     def value(self):
         # FIXME: TypeError: Object of type 'function' is not JSON serializable
-        return self._value.value # or self._daemon
+        return self._value# or self._daemon
 
     # noinspection PyCallingNonCallable
     @value.setter

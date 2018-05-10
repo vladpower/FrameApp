@@ -28,9 +28,8 @@ class Frame:
         self._slots_ = {}
         self._children_ = {}
         self._parent = parent
-
-        #self._collect_slots()
-        #self._set_slots_for_instance(**slot_values)
+        self._collect_slots()
+        self._set_slots_for_instance(**slot_values)
 
     def _collect_slots(self):
         """
@@ -38,7 +37,11 @@ class Frame:
         """
         self.__slots = deepcopy(self._slots_)
 
-        parents = self.__class__.__mro__
+        parents = []
+        par = self._parent
+        while(par):
+            parents.append(par)
+            par = par._parent
         for parent in reversed(parents):
             if parent not in (self.__class__, object, type):
                 self.__slots.update(parent._slots_)
@@ -58,7 +61,7 @@ class Frame:
         """
         Инициализация слотов у конечного объекта
         """
-        for attr_name, params in self.__slots.items():
+        for attr_name, params in self._slots_.items():
             if params is None:
                 continue
             slot = Slot(*self._get_slot_args(attr_name, params))
@@ -68,7 +71,7 @@ class Frame:
 
             setattr(self, attr_name, slot)
 
-    def find(self, req, slot_name='symbol'):
+    def find(self, req, slot_name='name'):
         if slot_name in self._slots_ and req==self._slots_[slot_name]._value or slot_name=='name' and req==self._name_:
             return self
         else:
@@ -81,8 +84,8 @@ class Frame:
     @staticmethod
     def _get_slot_args(name, params):
         if name in Slot.SYSTEMS_NAMES:
-            return name, params[0], params[1]
-        return params[0], params[1], params[2]
+            return name, params.value, params.inheritance_type
+        return params.name, params.value, params.inheritance_type
 
     @property
     def name(self):
@@ -98,9 +101,9 @@ class Frame:
         data['slots'] = []
         for slot in self._slots_.values():
             data['slots'].append( {
-                'name': slot._name,
-                'type': slot._type,
-                'value': slot._value
+                'name': slot.name,
+                'type': slot.inheritance_type,
+                'value': slot.value
             } )
         data['children'] = []
         for child in self._children_.values():
@@ -120,37 +123,33 @@ class Frame:
         return frame
 
     @staticmethod
-    def load_frame(cls, data): 
-        frame = Frame(cls)
-        frame._name_ = data['name']
+    def load_frame(data, parent=None): 
+        frame = Frame(parent, data['name'])
+        if(parent):
+            for element in parent._slots_.values():
+                if(element.inheritance_type in {Slot.IT_SAME, Slot.IT_OVERRIDE}):
+                    slot = Slot(element.name, element.value, element.type)
+                    frame._slots_[element.name] = slot
         for element in data['slots']:
             slot_name = element.pop('name')
             slot_type = element.pop('type')
             slot_value = element.pop('value')
-            slot = Slot(slot_name, slot_value, slot_type)
-            frame._slots_[slot_name] = slot
+
+            if(slot_name in frame._slots_):
+                if(parent._slots_[slot_name].type == Slot.IT_OVERRIDE and slot_value):
+                    frame._slots_[slot_name].value = slot_value
+            else:
+                slot = Slot(slot_name, slot_value, slot_type)
+                frame._slots_[slot_name] = slot
+                         
+            
         if "children" in data:
             for element in data['children']:
-                child = Frame.load_frame(frame, element)
-                frame._children_[child._slots_['symbol']] = child
+                child = Frame.load_frame(element, frame)
+                frame._children_[child.name] = child
         return frame
 
-            
-    @classmethod
-    def load_from_db(cls):
-        """
-        Загрузка схемы из базы данных (файл формата JSON)
-        :return Объект типа Scheme
-        """
-
-        file_path = settings.DB_FILE_PATH
-
-        with open(file_path, 'r') as infile:
-            data = json.load(infile)
-        scheme = Frame.load_frame(cls, data)
-        print('Схема "{}" загружена из {}\n'.format(scheme, file_path))
-
-        return scheme
+        
 
     def print(self, depth=0, left=10):
         """
@@ -169,8 +168,7 @@ class Frame:
         :type algorithms: tuple[el_scheme.algorithm]
         """
         for child in children:
-            if "symbol" in child._slots_:
-                self._children_[child._slots_['symbol']] = child
+            self._children_[child.name] = child
 
     def remove(self):
         """
@@ -178,8 +176,25 @@ class Frame:
         :type algorithms: tuple[el_scheme.algorithm]
         """
         if(self._parent):
-            del self._parent._children_[self._slots_['symbol']]
+            del self._parent._children_[self.name]
         self._children_.clear()
+
+
+    @classmethod
+    def load_from_db(self):
+        """
+        Загрузка фреймовой модели из базы данных (файл формата JSON)
+        :return Объект типа Frame
+        """
+
+        file_path = settings.DB_FILE_PATH
+
+        with open(file_path, 'r') as infile:
+            data = json.load(infile)
+        scheme = Frame.load_frame(data)
+        print('Схема "{}" загружена из {}\n'.format(scheme, file_path))
+
+        return scheme
 
     def save_to_db(self):
         """
@@ -192,4 +207,3 @@ class Frame:
             json.dump(data, outfile, indent=2)
 
         print('Схема "{}" сохранена в {}\n'.format(self, file_path))
-

@@ -3,62 +3,41 @@
   "slots": [
     {
       "name": "type",
-      "type": "Text",
+      "type": "UNIQUE",
       "value": "Scheme"
     }
   ],
   "children": [
     {
-      "name": "Двуклассовая классификация",
-      "slots": [
-        {
-          "name": "type",
-          "type": "Text",
-          "value": "AlgType"
-        },
-        {
-          "name": "symbol",
-          "type": "Text",
-          "value": "T1"
-        }
-      ],
+      "name": "Алгоритмы",
+      "slots": [],
       "children": [
         {
           "name": "Логистическая регрессия",
           "slots": [
             {
-              "name": "type",
-              "type": "Text",
-              "value": "Algorithm"
-            },
-            {
-              "name": "symbol",
-              "type": "Text",
-              "value": "A1"
-            },
-            {
               "name": "Точность",
-              "type": "Integer",
-              "value": 0
+              "type": "UNIQUE",
+              "value": "низкая"
             },
             {
               "name": "Время обучения",
-              "type": "Integer",
-              "value": 2
+              "type": "UNIQUE",
+              "value": "быстрое"
             },
             {
               "name": "Линейность",
-              "type": "Bool",
-              "value": 1
+              "type": "UNIQUE",
+              "value": "да"
             },
             {
               "name": "Параметры",
-              "type": "Integer",
+              "type": "UNIQUE",
               "value": 5
             },
             {
               "name": "Примечание",
-              "type": "Text",
+              "type": "UNIQUE",
               "value": null
             }
           ]
@@ -67,41 +46,54 @@
           "name": "Лес решений",
           "slots": [
             {
-              "name": "type",
-              "type": "Text",
-              "value": "Algorithm"
-            },
-            {
-              "name": "symbol",
-              "type": "Text",
-              "value": "A1"
-            },
-            {
               "name": "Точность",
-              "type": "Integer",
-              "value": 2
+              "type": "UNIQUE",
+              "value": "высокая"
             },
             {
               "name": "Время обучения",
-              "type": "Integer",
-              "value": 1
+              "type": "UNIQUE",
+              "value": "умеренное"
             },
             {
               "name": "Линейность",
-              "type": "Bool",
-              "value": 0
+              "type": "UNIQUE",
+              "value": "нет"
             },
             {
               "name": "Параметры",
-              "type": "Integer",
+              "type": "UNIQUE",
               "value": 6
             },
             {
               "name": "Примечание",
-              "type": "Text",
+              "type": "UNIQUE",
               "value": null
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Задачи",
+      "slots": [
+        {
+          "name": "procedure",
+          "type": "OVERRIDE",
+          "value": "algs_to_child"
+        }
+      ],
+      "children": [
+        {
+          "name": "Двуклассовая классификация",
+          "slots": [
+            {
+              "name": "Алгоритмы",
+              "type": "UNIQUE",
+              "value": ["Логистическая регрессия", "Лес решений"]
+            }
+          ],
+          "children": []
         }
       ]
     }

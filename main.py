@@ -6,7 +6,7 @@ from frame_app import *
 
 def main():
     app = QtWidgets.QApplication(sys.argv)  # Новый экземпляр QApplication
-    window = FrameApp()  # Создаём объект класса ExampleApp
+    window = FrameApp()  # Создаём объект класса FrameApp
     window.show()  # Показываем окно
     app.exec_()  # и запускаем приложение
 
