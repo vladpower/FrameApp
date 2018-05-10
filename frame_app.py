@@ -24,31 +24,22 @@ class FrameApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self.addAlg_pb.clicked.connect(self.add_frame)
         self.applySlot_pb.clicked.connect(self.edit_slot)
         self.remove_pb.clicked.connect(self.remove_frame)
+        self.searchName_pb.clicked.connect(self.search_name)
+        self._frames = {}
     
     def get_all(self):
         main_item = QtWidgets.QTreeWidgetItem([self._scheme._name_])
-        frames = [self._scheme]
-        frame_items = [main_item]
-        self._frames = {}
-        while(frames):
-            frame = frames.pop(0)
-            item = frame_items.pop(0)
-            Procedures.attach(self._scheme, frame, item)
-            for child in frame._children_.values():
-                new_item = QtWidgets.QTreeWidgetItem([child._name_])
-                item.addChild(new_item)
-                frames.append(child)
-                frame_items.append(new_item)
-                self._frames[new_item.text(0)] = child
+        self.show_frame(self._scheme, main_item)
         self.frame_tw.clear()
         self.frame_tw.addTopLevelItem(main_item)
 
     def show_frame(self, frame, item):
+        self._frames[item.text(0)] = frame
         Procedures.attach(self._scheme, frame, item)
         for child in frame._children_.values():
             new_item = QtWidgets.QTreeWidgetItem([child._name_])
             item.addChild(new_item)
-        
+            self.show_frame(child, new_item)
 
     def print_slots(self):
         if(self.frame_tw.selectedItems()):
@@ -78,11 +69,11 @@ class FrameApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
             if(self.alg_rb.isChecked()):
                 frame = Algorithm(self._algorithms, name)
                 self._algorithms.add_children(frame)
-                parent_item = QtWidgets.QTreeWidgetItem([alg_string])
+                parent_item = self._frames[alg_string]
             elif(self.task_rb.isChecked()):
                 frame = Task(self._tasks, name)
                 self._tasks.add_children(frame)
-                parent_item = QtWidgets.QTreeWidgetItem([task_string])
+                parent_item = self._frames[task_string]
             else:
                 return
             new_item = QtWidgets.QTreeWidgetItem([frame.name])
@@ -99,8 +90,16 @@ class FrameApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
                     frame_item = self.frame_tw.selectedItems()[0]
                     if frame_item.text(0) in self._frames:
                         frame = self._frames[frame_item.text(0)]
-                        frame._slots_[slot_name].value = value
+                        slot = frame._slots_[slot_name]
+                        if(not slot.has_daemon):
+                            slot.value = value
+                            self.update_children(frame)
         self._scheme.save_to_db()
+
+    def update_children(self, frame):
+        frame.collect_slots()
+        for child in frame._children_.values():
+            self.update_children(child)
 
     def remove_frame(self):
         if(self.frame_tw.selectedItems()):
@@ -108,6 +107,17 @@ class FrameApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
             if frame_item.text(0) in self._frames:
                 frame = self._frames[frame_item.text(0)]
                 frame.remove()
+        self._scheme.save_to_db()
+
+    def search_name(self):
+        name = self.nameSearch_le.text()
+        frame = self._scheme.find(name)
+        item = QtWidgets.QTreeWidgetItem([name])
+        self.show_frame(frame, item)
+        self.frame_tw.clear()
+        self.frame_tw.addTopLevelItem(item)
+
+        
 
        
 

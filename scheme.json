@@ -80,7 +80,7 @@
         {
           "name": "procedure",
           "type": "OVERRIDE",
-          "value": "algs_to_child"
+          "value": "algs_to_children"
         }
       ],
       "children": [
@@ -90,7 +90,8 @@
             {
               "name": "Алгоритмы",
               "type": "UNIQUE",
-              "value": ["Логистическая регрессия", "Лес решений"]
+              "value": ["Логистическая регрессия", "Лес решений"],
+              "daemon": "set_algs"
             }
           ],
           "children": []

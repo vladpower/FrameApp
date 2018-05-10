@@ -5,6 +5,7 @@ from .slot import Slot
 from .slot_types import FramePtrList
 
 import json
+import ast
 
 import settings
 
@@ -28,15 +29,21 @@ class Frame:
         self._slots_ = {}
         self._children_ = {}
         self._parent = parent
-        self._collect_slots()
+        self.collect_slots()
 
-    def _collect_slots(self):
+    def collect_slots(self):
         """
         Агрегация слотов от своих предков
         """
         if(self._parent):
             for element in self._parent._slots_.values():
-                if(element.inheritance_type in {Slot.IT_SAME, Slot.IT_OVERRIDE}):
+                if(element.name in self._slots_):
+                    if(element.inheritance_type==Slot.IT_SAME \
+                       or self._slots_[element.name].inheritance_type==Slot.IT_FINAL \
+                       or element.inheritance_type==Slot.IT_OVERRIDE \
+                       and self._slots_[element.name]==None):
+                        self._slots_[element.name].value = element.value
+                elif(element.inheritance_type in {Slot.IT_SAME, Slot.IT_OVERRIDE}):
                     slot = Slot(element.name, element.value, Slot.IT_FINAL)
                     self._slots_[element.name] = slot
 
@@ -99,13 +106,17 @@ class Frame:
             slot_name = element.pop('name')
             slot_type = element.pop('type')
             slot_value = element.pop('value')
-
+            if('daemon' in element):
+                slot_daemon = element.pop('daemon')
+            else:
+                slot_daemon = None
             if(slot_name in frame._slots_):
                 if(parent._slots_[slot_name].type == Slot.IT_OVERRIDE and slot_value):
                     frame._slots_[slot_name].value = slot_value
-                    frame._slots_[slot_name].type = slot_type
+                    frame._slots_[slot_name].inheritance_type = slot_type
+                    frame._slots_[slot_name].daemon = slot_daemon
             else:
-                slot = Slot(slot_name, slot_value, slot_type)
+                slot = Slot(slot_name, slot_value, slot_type, slot_daemon)
                 frame._slots_[slot_name] = slot
                          
             
@@ -141,7 +152,7 @@ class Frame:
         Удалить алгоритмы
         :type algorithms: tuple[el_scheme.algorithm]
         """
-        if(self._parent):
+        if(self._parent and self.name in self._parent._children_):
             del self._parent._children_[self.name]
         self._children_.clear()
 

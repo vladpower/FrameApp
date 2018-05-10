@@ -37,6 +37,14 @@ class Slot:
         return self._name in self.SYSTEMS_NAMES
 
     @property
+    def has_daemon(self):
+        return self._daemon==None
+
+    @property
+    def daemon(self):
+        return self._daemon
+
+    @property
     def inheritance_type(self):
         return self._inheritance_type
 
@@ -53,6 +61,10 @@ class Slot:
     @value.setter
     def value(self, value):
         self._value = value
+
+    @daemon.setter
+    def daemon(self, daemon):
+        self._daemon = daemon
 
     @property
     def type(self):
