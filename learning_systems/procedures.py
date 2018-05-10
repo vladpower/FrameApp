@@ -4,8 +4,8 @@ class Procedures:
     
     @staticmethod
     def algs_to_child(scheme, frame, item):
-        if('Алгоритмы' in frame._slots_):
-            for child_name in frame._slots_['Алгоритмы']:
+        if('Алгоритмы' in frame._slots_ and frame._slots_['Алгоритмы'].value):
+            for child_name in frame._slots_['Алгоритмы'].value:
                 child = scheme.find(child_name)
                 new_item = QtWidgets.QTreeWidgetItem([child._name_])
                 item.addChild(new_item)

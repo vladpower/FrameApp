@@ -29,47 +29,16 @@ class Frame:
         self._children_ = {}
         self._parent = parent
         self._collect_slots()
-        self._set_slots_for_instance(**slot_values)
 
     def _collect_slots(self):
         """
         Агрегация слотов от своих предков
         """
-        self.__slots = deepcopy(self._slots_)
-
-        parents = []
-        par = self._parent
-        while(par):
-            parents.append(par)
-            par = par._parent
-        for parent in reversed(parents):
-            if parent not in (self.__class__, object, type):
-                self.__slots.update(parent._slots_)
-                for slot_attr, params in parent._slots_.items():
-                    if not params:
-                        continue
-                    name, value, inheritance_type = self._get_slot_args(slot_attr, params)
-
-                    if inheritance_type == Slot.IT_UNIQUE:
-                        self.__slots[slot_attr] = (
-                            (value.__class__(), inheritance_type)
-                            if name in Slot.SYSTEMS_NAMES else
-                            (name, value.__class__(), inheritance_type)
-                        )
-
-    def _set_slots_for_instance(self, **slot_values):
-        """
-        Инициализация слотов у конечного объекта
-        """
-        for attr_name, params in self._slots_.items():
-            if params is None:
-                continue
-            slot = Slot(*self._get_slot_args(attr_name, params))
-
-            if slot.inheritance_type != Slot.IT_SAME and attr_name in slot_values:
-                slot.value = slot_values[attr_name]
-
-            setattr(self, attr_name, slot)
+        if(self._parent):
+            for element in self._parent._slots_.values():
+                if(element.inheritance_type in {Slot.IT_SAME, Slot.IT_OVERRIDE}):
+                    slot = Slot(element.name, element.value, Slot.IT_FINAL)
+                    self._slots_[element.name] = slot
 
     def find(self, req, slot_name='name'):
         if slot_name in self._slots_ and req==self._slots_[slot_name]._value or slot_name=='name' and req==self._name_:
@@ -100,11 +69,12 @@ class Frame:
         data['name'] = self._name_
         data['slots'] = []
         for slot in self._slots_.values():
-            data['slots'].append( {
-                'name': slot.name,
-                'type': slot.inheritance_type,
-                'value': slot.value
-            } )
+            if(slot.inheritance_type != Slot.IT_FINAL):
+                data['slots'].append( {
+                    'name': slot.name,
+                    'type': slot.inheritance_type,
+                    'value': slot.value
+                } )
         data['children'] = []
         for child in self._children_.values():
             data['children'].append( child.serialize() )
@@ -125,11 +95,6 @@ class Frame:
     @staticmethod
     def load_frame(data, parent=None): 
         frame = Frame(parent, data['name'])
-        if(parent):
-            for element in parent._slots_.values():
-                if(element.inheritance_type in {Slot.IT_SAME, Slot.IT_OVERRIDE}):
-                    slot = Slot(element.name, element.value, element.type)
-                    frame._slots_[element.name] = slot
         for element in data['slots']:
             slot_name = element.pop('name')
             slot_type = element.pop('type')
@@ -138,6 +103,7 @@ class Frame:
             if(slot_name in frame._slots_):
                 if(parent._slots_[slot_name].type == Slot.IT_OVERRIDE and slot_value):
                     frame._slots_[slot_name].value = slot_value
+                    frame._slots_[slot_name].type = slot_type
             else:
                 slot = Slot(slot_name, slot_value, slot_type)
                 frame._slots_[slot_name] = slot
