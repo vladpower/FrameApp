@@ -47,13 +47,6 @@
            </column>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="getAll_pb">
-           <property name="text">
-            <string>Показать всё</string>
-           </property>
-          </widget>
-         </item>
         </layout>
        </item>
        <item>
@@ -67,7 +60,7 @@
             </sizepolicy>
            </property>
            <property name="title">
-            <string>Добавить</string>
+            <string/>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
             <item>
@@ -109,14 +102,21 @@
               </property>
              </widget>
             </item>
+            <item>
+             <widget class="QPushButton" name="remove_pb">
+              <property name="text">
+               <string>Удалить</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="getAll_pb">
+              <property name="text">
+               <string>Показать всё</string>
+              </property>
+             </widget>
+            </item>
            </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="remove_pb">
-           <property name="text">
-            <string>Удалить</string>
-           </property>
           </widget>
          </item>
         </layout>

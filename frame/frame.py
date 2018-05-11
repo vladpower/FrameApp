@@ -57,6 +57,14 @@ class Frame:
                     return ret
         return None
 
+    def find_list(self, req, slot_name='name'):
+        list=[]
+        if slot_name in self._slots_ and req==self._slots_[slot_name]._value or slot_name=='name' and req==self._name_:
+            list.append(self)
+        for child in self._children_.values():
+            list.extend(child.find_list(str(req), slot_name))
+        return list
+
     @staticmethod
     def _get_slot_args(name, params):
         if name in Slot.SYSTEMS_NAMES:
@@ -77,11 +85,14 @@ class Frame:
         data['slots'] = []
         for slot in self._slots_.values():
             if(slot.inheritance_type != Slot.IT_FINAL):
-                data['slots'].append( {
+                slot_data = {
                     'name': slot.name,
                     'type': slot.inheritance_type,
                     'value': slot.value
-                } )
+                }
+                if(slot.has_daemon):
+                    slot_data['daemon'] = slot.daemon
+                data['slots'].append( slot_data )
         data['children'] = []
         for child in self._children_.values():
             data['children'].append( child.serialize() )
@@ -125,19 +136,6 @@ class Frame:
                 child = Frame.load_frame(element, frame)
                 frame._children_[child.name] = child
         return frame
-
-        
-
-    def print(self, depth=0, left=10):
-        """
-        Вывести на экран содержимое
-        """
-        if(left>0):
-            print(" "*depth + "<"+self._name_+">")
-            for slot in self._slots_.values():
-                slot.print(depth+2)
-            for child in self._children_.values():
-                child.print(depth+4, left-1)
 
     def add_children(self, *children):
         """

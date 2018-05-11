@@ -24,7 +24,7 @@ class Slot:
         self._type = value.__class__.__name__
         self._inheritance_type = inheritance_type
         self._value = value
-        self._daemon = daemon or (lambda: None)
+        self._daemon = daemon
 
     def __getattr__(self, attr):
         return getattr(self._value, attr)
@@ -38,7 +38,7 @@ class Slot:
 
     @property
     def has_daemon(self):
-        return self._daemon==None
+        return self._daemon!=None
 
     @property
     def daemon(self):
