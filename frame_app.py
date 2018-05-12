@@ -138,7 +138,7 @@ class FrameApp(QtWidgets.QMainWindow, design.Ui_MainWindow):
         self._scheme.save_to_db()
 
     def search_name(self):
-        name = self.nameSearch_le.text().lower()
+        name = self.nameSearch_le.text()
         name = name[0].upper() + name[1:]
         frame = self._scheme.find(name)
         self.frame_tw.clear()
